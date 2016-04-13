@@ -1,0 +1,72 @@
+#include<stdio.h>
+#include<conio.h>
+#include "C:\TC\BIN\CHARSTAC.C"
+
+int priority(char c)
+{
+	if(c=='+'||c=='-')
+	     return 0;
+	if(c=='*'||c=='/'||c=='%')
+	     return 1;
+	if(c=='(')
+	     return 2;
+}
+
+int getpriority(char a,char b)
+{
+	if(priority(a)==priority(b))
+	      return 0;
+	if(priority(a)>priority(b))
+	      return 1;
+	if(priority(a)<priority(b))
+	      return -1;
+}
+
+int pushoperator(mystack *m1,char op)
+{
+	int pr;
+	char t1,t2;
+	if(op==')')
+	{
+	      lb:t1=pop(m1);
+	      if(t1!='(')
+		{
+		       printf("%c",t1);
+		       goto lb;
+		}
+	}
+	if(stackempty(*m1)==1||op=='(')
+	{
+		return push(m1,op);
+	}
+	t2=gettop(*m1);
+	pr=getpriority(op,t2);
+	if(t2=='('||pr==1)
+	{
+	    return push(m1,op);
+	}
+	printf("%c",pop(m1));
+	    return pushoperator(m1,op);
+}
+
+void main()
+{
+       mystack m1;
+       int len,i;
+       char exp[20],l;
+       printf("Enter infix notation: ");
+       gets(exp);
+       m1.top=-1;
+       m1.size=20;
+       len=strlen(exp);
+       for(i=0;i<len;i++)
+       {
+		if(isalpha(exp[i]))
+			printf("%c",exp[i]);
+		else
+			pushoperator(&m1,exp[i]);
+       }
+       while((l=pop(&m1))!='\0')
+	   printf("%c",l);
+	   getch();
+}
